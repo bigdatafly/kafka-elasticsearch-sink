@@ -3,17 +3,11 @@
  */
 package com.bigdatafly.elasticsearch;
 
-import java.util.List;
-import java.util.Map;
-
-import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.bigdatafly.factory.ElasticSearchClientSingleFactory;
 
 
 /**
@@ -49,7 +43,7 @@ public class ElasticSearchClient {
 				.build();
 		TransportAddress[] transportAddress = getNodesTransportAddress(configurations);
 		
-		return ElasticSearchClientSingleFactory
+		return ElasticSearchSingleClient
 				.builder()
 				.settings(settings)
 				.create()

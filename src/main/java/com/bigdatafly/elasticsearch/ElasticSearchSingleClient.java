@@ -1,11 +1,14 @@
 /**
  * 
  */
-package com.bigdatafly.factory;
+package com.bigdatafly.elasticsearch;
+
+import java.util.function.Supplier;
 
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 
+import com.bigdatafly.factory.SingletonFactory;
 import com.google.common.base.Preconditions;
 
 /**
@@ -26,21 +29,23 @@ public class ElasticSearchSingleClient{
 		
 	}
 
+	/**
+	 * lambda 就是NB
+	 * @return
+	 */
 	public TransportClient create() {
 		
-		TransportClient ins = client;
-		if(ins == null){
-			synchronized(ElasticSearchSingleClient.class){
-				if(ins == null){
-					ins = new TransportClient.Builder()
-					.settings(settings)
-					.build();
-				}
-				
-				client = ins;
+		Preconditions.checkArgument(settings != null,
+				"elasticsearch configurations is null");
+		
+		return  SingletonFactory.of(new Supplier<TransportClient>(){
+			@Override
+			public TransportClient get() {
+				return new TransportClient.Builder()
+							.settings(settings)
+							.build();
 			}
-		}
-		return client;
+		}).get();
 	}
 
 	public static ElasticSearchSingleClient builder() {
@@ -50,7 +55,6 @@ public class ElasticSearchSingleClient{
 	
 	public ElasticSearchSingleClient settings(Settings settings){
 		
-		Preconditions.checkArgument(settings != null,"elasticsearch configurations is null");
 		this.settings = settings;
 		return this;
 	}
