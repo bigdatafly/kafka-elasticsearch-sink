@@ -6,6 +6,7 @@ package com.bigdatafly.elasticsearch;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,9 @@ public class ElasticSearchConfiguration extends AbstractConfig {
 	private static final Logger logger = LoggerFactory.getLogger(ElasticSearchConfiguration.class);
 	
 	static ConfigDef configDef = new ConfigDef()
-		.define(ElasticSearchConstants.CLUSTER_NAME_KEY, Type.STRING,Importance.HIGH, "Elastic search cluster");
+		.define(ElasticSearchConstants.CLUSTER_NAME_KEY, Type.STRING,Importance.HIGH, "cluster name should be given")
+		.define(ElasticSearchConstants.INDEX_NAME_KEY, Type.STRING,Importance.HIGH, "index name should be given")
+		.define(ElasticSearchConstants.OP_TYPE_KEY, Type.STRING,Importance.HIGH, "op type should be given");
 	
 	/**
 	 * 
@@ -44,11 +47,22 @@ public class ElasticSearchConfiguration extends AbstractConfig {
 	public TransportAddress[] getNodesTransportAddress() {
 		
 		List<String> nodes = null;
-		String svrName = ;
+		String svrName = null;
+		try{
+			svrName = getString(ElasticSearchConstants.NAME_SEVR_KEY);
+			
+		}catch(Exception ex){
+			
+		}finally{
+			svrName  = (svrName ==null ) ? ElasticSearchConstants.DEFAULT_NAME_SEVR : svrName;
+		}
 		
+		String[] hostAndPorts = svrName.split(",");
+		nodes = Arrays.asList(hostAndPorts);
 		return getNodesTransportAddress(nodes);
 	}
 
+	
 	private TransportAddress[] getNodesTransportAddress(List<String> nodes){
 		
 		List<TransportAddress> transportAddress = new ArrayList<TransportAddress>(nodes.size());
@@ -95,6 +109,24 @@ public class ElasticSearchConfiguration extends AbstractConfig {
 			return super.getString(key);
 		}catch(ConfigException e){
 			return defVal;
+		}
+	}
+
+	public String getIndexName() {
+		
+		try{
+			return super.getString(ElasticSearchConstants.INDEX_NAME_KEY);
+		}catch(ConfigException e){
+			return ElasticSearchConstants.DEFAULT_INDEX_NAME;
+		}
+	}
+
+	public String getTypeName() {
+		
+		try{
+			return super.getString(ElasticSearchConstants.OP_TYPE_KEY);
+		}catch(ConfigException e){
+			return ElasticSearchConstants.DEFAULT_OP_TYPE;
 		}
 	}
 
