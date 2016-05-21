@@ -43,7 +43,9 @@ public class ElasticSearchClient {
 		
 		Settings settings = Settings
 				.settingsBuilder()
-				.put(ElasticSearchConstants.CLUSTER_NAME, configurations.get(ElasticSearchConstants.CLUSTER_NAME))
+				.put(ElasticSearchConstants.CLUSTER_NAME_KEY,
+						configurations.getString(ElasticSearchConstants.CLUSTER_NAME_KEY,
+								ElasticSearchConstants.DEFAULT_NAME_SEVR))
 				.build();
 		TransportAddress[] transportAddress = getNodesTransportAddress(configurations);
 		

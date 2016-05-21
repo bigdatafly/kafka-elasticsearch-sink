@@ -5,43 +5,61 @@ package com.bigdatafly.elasticsearch;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import jersey.repackaged.com.google.common.base.Preconditions;
+import com.google.common.base.Preconditions;
 
+import org.apache.kafka.common.config.AbstractConfig;
+import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.common.config.ConfigDef.Importance;
+import org.apache.kafka.common.config.ConfigDef.Type;
+import org.apache.kafka.common.config.ConfigException;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.hadoop.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author summer
  *
  */
-public class ElasticSearchConfiguration {
+public class ElasticSearchConfiguration extends AbstractConfig {
 
+	private static final Logger logger = LoggerFactory.getLogger(ElasticSearchConfiguration.class);
+	
+	static ConfigDef configDef = new ConfigDef()
+		.define(ElasticSearchConstants.CLUSTER_NAME_KEY, Type.STRING,Importance.HIGH, "Elastic search cluster");
+	
 	/**
 	 * 
 	 */
-	public ElasticSearchConfiguration() {
-		// TODO Auto-generated constructor stub
+	public ElasticSearchConfiguration(Map<String,String> settings) {
+		
+		super(configDef , settings);
 	}
 
 	public TransportAddress[] getNodesTransportAddress() {
 		
 		List<String> nodes = null;
+		String svrName = ;
+		
 		return getNodesTransportAddress(nodes);
 	}
 
 	private TransportAddress[] getNodesTransportAddress(List<String> nodes){
 		
-		TransportAddress[] transportAddress = new TransportAddress[nodes.size()];
-		int i = 0;
+		List<TransportAddress> transportAddress = new ArrayList<TransportAddress>(nodes.size());
 		for(String node : nodes){
-			
-			transportAddress[i++] = getTransportAddress(node);
+			TransportAddress transAddr = getTransportAddress(node);
+			if(transAddr == null)
+				continue;
+			transportAddress.add(transAddr);
 		}
 		
-		return transportAddress;
+		return transportAddress.toArray(new TransportAddress[transportAddress.size()]);
 	}
 	
 	private TransportAddress getTransportAddress(String sevrName){
@@ -49,24 +67,35 @@ public class ElasticSearchConfiguration {
 		Preconditions.checkArgument(StringUtils
 				.hasText(sevrName),"server name "+ sevrName+" is null");
 		String host = null;
-		int port = ElasticSearchConstants.ES_DEFAULT_PORT;
-		
-		
-		
-		InetSocketTransportAddress sevrAddr = null;
+		int port = ElasticSearchConstants.DEFAULT_PORT;
+		InetSocketTransportAddress sevrAddr = null;	
 		try {
+			String[] hostAndPort = sevrName.split(":");
+			host = hostAndPort[0];
+			if(hostAndPort.length == 2){
+				port = Integer.valueOf(hostAndPort[1]);
+			}
 			sevrAddr = new InetSocketTransportAddress(InetAddress.getByName(host), port);
-		} catch (UnknownHostException e) {
+		} catch (UnknownHostException | NumberFormatException e) {
 			
-			e.printStackTrace();
-		}
+			logger.error("elasticsearch servername "+ sevrName +" is wrong", e);
+		} 
 		
 		return sevrAddr;
 	}
 	
-	public Object get(String clusterName) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getString(String key) {
+		
+		return super.getString(key);
+	}
+	
+	public String getString(String key,String defVal){
+		
+		try{
+			return super.getString(key);
+		}catch(ConfigException e){
+			return defVal;
+		}
 	}
 
 }
