@@ -3,16 +3,6 @@
  */
 package com.bigdatafly.elasticsearch;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.kafka.connect.sink.SinkRecord;
-import org.elasticsearch.action.ActionRequest;
-import org.elasticsearch.client.Requests;
-import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.slf4j.Logger;
@@ -87,18 +77,12 @@ public class ElasticSearchClient {
 
 	public boolean process(byte[] record) {
 		
-		
 		boolean success = false;
-		
         if (record != null) {
             processor.add(configurations.getIndexName(),configurations.getTypeName(),record);
             success = true;
         }
         return success;
-		
-		
-	}
 
-	
-	
+	}
 }
