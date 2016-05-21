@@ -12,6 +12,7 @@
 	    <artifactId>elasticsearch</artifactId>
 	    <version>2.3.2</version>
 	</dependency>
+	
 	<!-- http://mvnrepository.com/artifact/org.elasticsearch/elasticsearch-hadoop-mr -->
 	<dependency>
 	    <groupId>org.elasticsearch</groupId>
