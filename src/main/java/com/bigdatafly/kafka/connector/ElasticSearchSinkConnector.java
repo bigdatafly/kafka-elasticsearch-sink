@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.kafka.common.utils.AppInfoParser;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.sink.SinkConnector;
 //import org.apache.zookeeper.Version;
@@ -60,7 +61,7 @@ public class ElasticSearchSinkConnector extends SinkConnector{
 	@Override
 	public String version() {
 		
-		return Version.version();
+		return AppInfoParser.getVersion();
 	}
 
 }
