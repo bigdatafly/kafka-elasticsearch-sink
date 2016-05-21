@@ -76,13 +76,11 @@ public class ElasticSearchClient {
 	}
 
 	public boolean process(byte[] record) {
-		
 		boolean success = false;
-        if (record != null) {
+		if (record != null) {
             processor.add(configurations.getIndexName(),configurations.getTypeName(),record);
             success = true;
         }
-        return success;
-
+		return success;
 	}
 }
