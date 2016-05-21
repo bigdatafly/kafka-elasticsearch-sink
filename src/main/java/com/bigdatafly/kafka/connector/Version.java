@@ -18,6 +18,6 @@ public class Version {
 
 	
 	public static String version(){
-		return "";
+		return "0.0.1";
 	}
 }

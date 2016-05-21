@@ -48,10 +48,6 @@ public class ElasticSearchSingletonBulkProcessor{
                 BulkProcessor bulkProcessor = getBulkProcessor();
                 List<ActionRequest> requests = null;
                 try {
-                    /*
-                     * copy failed requests to local variable & clear
-                     * failedRequests
-                     */
                     requests = new ArrayList<ActionRequest>(failedRequests);
                     failedRequests.clear();
                 } finally {
