@@ -5,6 +5,11 @@
   <version>1.0.1-SNAPSHOT</version>
   <name>kafka-elasticsearch-sink</name>
   <description>kafka elasticsearch sink</description>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
   <dependencies>
   <!-- http://mvnrepository.com/artifact/org.elasticsearch/elasticsearch -->
 	<dependency>
